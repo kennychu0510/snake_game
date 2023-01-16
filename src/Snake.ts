@@ -17,6 +17,7 @@ export default class Snake {
   private direction: DIRECTION;
   tick = 0;
   food: Food;
+  alive = true;
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
@@ -34,11 +35,17 @@ export default class Snake {
       this.ctx.fillRect(cell.x * GRID_SIZE, cell.y * GRID_SIZE, GRID_SIZE, GRID_SIZE); 
     }
     if (this.tick % SPEED === 0) {
-      this.update();
+      if (this.alive) {
+        this.update();
+      }
     }
   }
 
   update() {
+    if (this.checkCollision()) {
+      this.alive = false;
+      return
+    }
     this.body.unshift({ x: this.head.x, y: this.head.y })
     this.body = this.body.slice(0, this.length - 1)
     
@@ -85,5 +92,12 @@ export default class Snake {
     if (this.direction === DIRECTION.UP && d === DIRECTION.DOWN) return;
     if (this.direction === DIRECTION.DOWN && d === DIRECTION.UP) return;
     this.direction = d;
+  }
+
+  private checkCollision(): boolean {
+    for (let cell of this.body) {
+      if (cell.x === this.head.x && cell.y === this.head.y) return true
+    }
+    return false
   }
 }
