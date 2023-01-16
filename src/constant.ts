@@ -12,7 +12,7 @@ export enum DIRECTION {
   UP = 3,
 }
 
-export const SPEED = 30;
+export const SPEED = 20;
 
 export type Cell = {
   x: number,

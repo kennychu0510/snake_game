@@ -14,7 +14,7 @@ export default class Snake {
   }[];
 
   ctx: CanvasRenderingContext2D;
-  direction: DIRECTION;
+  private direction: DIRECTION;
   tick = 0;
   food: Food;
 

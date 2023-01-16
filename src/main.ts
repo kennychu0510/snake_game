@@ -8,17 +8,21 @@ function getElement(selector: string) {
 }
 
 const canvas = getElement('canvas') as HTMLCanvasElement;
+const LEFT_BUTTON = getElement('#left-button') as HTMLButtonElement;
+const RIGHT_BUTTON = getElement('#right-button') as HTMLButtonElement;
+const DOWN_BUTTON = getElement('#down-button') as HTMLButtonElement;
+const UP_BUTTON = getElement('#up-button') as HTMLButtonElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
 window.devicePixelRatio = 2;
 
-const GAME = new Game(ctx);
+const game = new Game(ctx);
 
 function render() {
   clear(ctx);
-  GAME.draw();
+  game.draw();
   requestAnimationFrame(render);
 }
 
@@ -32,19 +36,32 @@ document.addEventListener('keydown', (e) => {
   switch (e.key) {
     case 'a':
     case 'ArrowLeft':
-      GAME.snake.direction = DIRECTION.LEFT;
+      game.snake.changeDirection(DIRECTION.LEFT);
       break;
     case 's':
     case 'ArrowDown':
-      GAME.snake.direction = DIRECTION.DOWN;
+      game.snake.changeDirection(DIRECTION.DOWN);
       break;
     case 'd':
     case 'ArrowRight':
-      GAME.snake.direction = DIRECTION.RIGHT;
+      game.snake.changeDirection(DIRECTION.RIGHT);
       break;
     case 'w':
     case 'ArrowUp':
-      GAME.snake.direction = DIRECTION.UP;
+      game.snake.changeDirection(DIRECTION.UP);
       break;
   }
 });
+
+LEFT_BUTTON.addEventListener('click', () => {
+  game.snake.changeDirection(DIRECTION.LEFT);
+})
+RIGHT_BUTTON.addEventListener('click', () => {
+  game.snake.changeDirection(DIRECTION.RIGHT);
+})
+DOWN_BUTTON.addEventListener('click', () => {
+  game.snake.changeDirection(DIRECTION.DOWN);
+})
+UP_BUTTON.addEventListener('click', () => {
+  game.snake.changeDirection(DIRECTION.UP);
+})
