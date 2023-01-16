@@ -1,4 +1,4 @@
-import { CANVAS_HEIGHT, CANVAS_WIDTH, Cell, COLUMNS, GRID_SIZE, ROWS } from './constant';
+import { Cell, COLUMNS, GRID_SIZE, ROWS } from './constant';
 
 export class Food {
   ctx: CanvasRenderingContext2D;

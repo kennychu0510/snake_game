@@ -1,4 +1,4 @@
-import { CANVAS_HEIGHT, CANVAS_WIDTH, COLUMNS, DIRECTION, GRID_SIZE, ROWS, SPEED } from './constant';
+import { COLUMNS, DIRECTION, GRID_SIZE, ROWS, SPEED } from './constant';
 import { Food } from './Food';
 
 export default class Snake {
@@ -59,14 +59,14 @@ export default class Snake {
         break;
       case DIRECTION.LEFT:
         if (this.head.x === 0) {
-          this.head.x = COLUMNS;
+          this.head.x = COLUMNS - 1;
         } else {
           this.head.x -= 1;
         }
         break;
       case DIRECTION.UP:
         if (this.head.y === 0) {
-          this.head.y = ROWS;
+          this.head.y = ROWS - 1;
         } else {
           this.head.y -= 1;
         }
