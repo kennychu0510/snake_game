@@ -1,12 +1,12 @@
-import { CANVAS_HEIGHT, CANVAS_WIDTH, DIRECTION, GRID_SIZE, SPEED } from './constant';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, COLUMNS, DIRECTION, GRID_SIZE, ROWS, SPEED } from './constant';
 import { Food } from './Food';
 
 export default class Snake {
   length = 2;
   color = 'red';
   head = {
-    x: CANVAS_WIDTH / 2 - GRID_SIZE / 2,
-    y: CANVAS_HEIGHT / 2,
+    x: Math.floor(COLUMNS / 2),
+    y: ROWS / 2,
   };
   body: {
     x: number;
@@ -21,55 +21,61 @@ export default class Snake {
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
     this.direction = DIRECTION.RIGHT;
-    this.body = [{ x: CANVAS_WIDTH / 2 - GRID_SIZE / 2 - GRID_SIZE, y: CANVAS_HEIGHT / 2 }];
+    this.body = [{ x: this.head.x - 1, y: this.head.y }];
     this.food = new Food(ctx, this.head, this.body)
   }
 
   draw() {
+    this.food.draw();
     this.ctx.fillStyle = this.color;
     this.tick++;
-    this.ctx.fillRect(this.head.x, this.head.y, GRID_SIZE, GRID_SIZE);
+    this.ctx.fillRect(this.head.x * GRID_SIZE, this.head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
     for (let cell of this.body) {
-      this.ctx.fillRect(cell.x, cell.y, GRID_SIZE, GRID_SIZE); 
+      this.ctx.fillRect(cell.x * GRID_SIZE, cell.y * GRID_SIZE, GRID_SIZE, GRID_SIZE); 
     }
     if (this.tick % SPEED === 0) {
       this.update();
     }
-    
   }
 
   update() {
     this.body.unshift({ x: this.head.x, y: this.head.y })
     this.body = this.body.slice(0, this.length - 1)
+    
     switch (this.direction) {
       case DIRECTION.RIGHT:
-        if (this.head.x === CANVAS_WIDTH - GRID_SIZE) {
+        if (this.head.x === COLUMNS - 1) {
           this.head.x = 0;
         } else {
-          this.head.x += GRID_SIZE;
+          this.head.x += 1;
         }
         break;
       case DIRECTION.DOWN:
-        if (this.head.y === CANVAS_HEIGHT - GRID_SIZE) {
+        if (this.head.y === ROWS - 1) {
           this.head.y = 0;
         } else {
-          this.head.y += GRID_SIZE;
+          this.head.y += 1;
         }
         break;
       case DIRECTION.LEFT:
         if (this.head.x === 0) {
-          this.head.x = CANVAS_WIDTH - GRID_SIZE;
+          this.head.x = COLUMNS;
         } else {
-          this.head.x -= GRID_SIZE;
+          this.head.x -= 1;
         }
         break;
       case DIRECTION.UP:
         if (this.head.y === 0) {
-          this.head.y = CANVAS_HEIGHT - GRID_SIZE;
+          this.head.y = ROWS;
         } else {
-          this.head.y -= GRID_SIZE;
+          this.head.y -= 1;
         }
         break;
+    }
+    if (this.head.x === this.food.x && this.head.y === this.food.y) {
+      this.food.spawn()
+      this.length++;
+      this.update()
     }
   }
 
