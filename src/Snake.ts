@@ -1,12 +1,12 @@
-import { COLUMNS, DIRECTION, GRID_SIZE, ROWS, SPEED } from './constant';
-import { Food } from './Food';
-import { getElement } from './helper';
+import { COLUMNS, DIRECTION, GRID_SIZE, ROWS, SPEED } from "./constant";
+import { Food } from "./Food";
+import { getElement } from "./helper";
 
-const LEVEL = getElement('#game-header span') as HTMLSpanElement;
+const LEVEL = getElement("#game-header span") as HTMLSpanElement;
 
 export default class Snake {
   length = 2;
-  color = 'red';
+  color = "red";
   head = {
     x: Math.floor(COLUMNS / 2),
     y: ROWS / 2,
@@ -26,7 +26,7 @@ export default class Snake {
     this.ctx = ctx;
     this.direction = DIRECTION.RIGHT;
     this.body = [{ x: this.head.x - 1, y: this.head.y }];
-    this.food = new Food(ctx, this.head, this.body)
+    this.food = new Food(ctx, this.head, this.body);
   }
 
   draw() {
@@ -35,9 +35,14 @@ export default class Snake {
     this.tick++;
     this.ctx.fillRect(this.head.x * GRID_SIZE, this.head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
     for (let cell of this.body) {
-      this.ctx.fillRect(cell.x * GRID_SIZE, cell.y * GRID_SIZE, GRID_SIZE, GRID_SIZE); 
+      this.ctx.fillRect(cell.x * GRID_SIZE, cell.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
     }
+
     if (this.tick % SPEED === 0) {
+      if (this.checkCollision()) {
+        this.alive = false;
+        return;
+      }
       if (this.alive) {
         this.update();
       }
@@ -45,13 +50,9 @@ export default class Snake {
   }
 
   update() {
-    if (this.checkCollision()) {
-      this.alive = false;
-      return
-    }
-    this.body.unshift({ x: this.head.x, y: this.head.y })
-    this.body = this.body.slice(0, this.length - 1)
-    
+    this.body.unshift({ x: this.head.x, y: this.head.y });
+    this.body = this.body.slice(0, this.length - 1);
+
     switch (this.direction) {
       case DIRECTION.RIGHT:
         if (this.head.x === COLUMNS - 1) {
@@ -83,10 +84,10 @@ export default class Snake {
         break;
     }
     if (this.head.x === this.food.x && this.head.y === this.food.y) {
-      this.food.spawn()
+      this.food.spawn();
       this.length++;
       LEVEL.innerHTML = String(this.length - 1);
-      this.update()
+      this.update();
     }
   }
 
@@ -100,8 +101,8 @@ export default class Snake {
 
   private checkCollision(): boolean {
     for (let cell of this.body) {
-      if (cell.x === this.head.x && cell.y === this.head.y) return true
+      if (cell.x === this.head.x && cell.y === this.head.y) return true;
     }
-    return false
+    return false;
   }
 }
