@@ -1,11 +1,6 @@
 import { CANVAS_HEIGHT, CANVAS_WIDTH, DIRECTION } from './constant';
 import Game from './game';
-
-function getElement(selector: string) {
-  const element = document.querySelector(selector);
-  if (!element) throw new Error(selector + ' not found');
-  return element;
-}
+import { getElement } from './helper';
 
 const canvas = getElement('canvas') as HTMLCanvasElement;
 const LEFT_BUTTON = getElement('#left-button') as HTMLButtonElement;

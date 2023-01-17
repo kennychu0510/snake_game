@@ -1,5 +1,8 @@
 import { COLUMNS, DIRECTION, GRID_SIZE, ROWS, SPEED } from './constant';
 import { Food } from './Food';
+import { getElement } from './helper';
+
+const LEVEL = getElement('#game-header span') as HTMLSpanElement;
 
 export default class Snake {
   length = 2;
@@ -82,6 +85,7 @@ export default class Snake {
     if (this.head.x === this.food.x && this.head.y === this.food.y) {
       this.food.spawn()
       this.length++;
+      LEVEL.innerHTML = String(this.length - 1);
       this.update()
     }
   }
