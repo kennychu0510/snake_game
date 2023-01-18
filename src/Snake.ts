@@ -1,4 +1,4 @@
-import { CellState, COLUMNS, DIRECTION, GRID_SIZE, Position, ROWS, SPEED } from './constant';
+import { CellState, COLUMNS, DIRECTION, Position, ROWS, SPEED } from './constant';
 import { getElement } from './helper';
 
 const LEVEL = getElement('#game-header span') as HTMLSpanElement;
@@ -101,12 +101,6 @@ export default class Snake {
       if (this.position[i].x === head.x && this.position[i].y === head.y) return true;
     }
     return false;
-  }
-
-  private clearSnake(board: CellState[][]) {
-    for (let position of this.position) {
-      board[position.x][position.y] = null;
-    }
   }
 
   private genFood(board: CellState[][]) {

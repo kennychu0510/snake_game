@@ -1,5 +1,5 @@
 import Background from './Background';
-import { CANVAS_HEIGHT, CANVAS_WIDTH, CellState, COLUMNS, GRID_SIZE, Position, ROWS } from './constant';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, CellState, COLUMNS, GRID_SIZE, ROWS } from './constant';
 import Snake from './snake';
 
 export default class Game {
@@ -65,13 +65,13 @@ export default class Game {
     this.ctx.fillRect(row * GRID_SIZE, col * GRID_SIZE, GRID_SIZE, GRID_SIZE)
   }
 
-  private clearBoard() {
-    for (let i = 0; i < this.board.length; i++) {
-      for (let j = 0; j < this.board[i].length; j++) {
-        this.board[i][j] = null
-      }
-    }
-  }
+  // private clearBoard() {
+  //   for (let i = 0; i < this.board.length; i++) {
+  //     for (let j = 0; j < this.board[i].length; j++) {
+  //       this.board[i][j] = null
+  //     }
+  //   }
+  // }
 
   
 }
