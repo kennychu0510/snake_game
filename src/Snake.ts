@@ -1,92 +1,94 @@
-import { COLUMNS, DIRECTION, GRID_SIZE, ROWS, SPEED } from './constant';
-import { Food } from './Food';
+import { CellState, COLUMNS, DIRECTION, GRID_SIZE, Position, ROWS, SPEED } from './constant';
 import { getElement } from './helper';
 
 const LEVEL = getElement('#game-header span') as HTMLSpanElement;
 
 export default class Snake {
-  length = 2;
   color = 'red';
-  head = {
-    x: Math.floor(COLUMNS / 2),
-    y: ROWS / 2,
-  };
-  body: {
-    x: number;
-    y: number;
-  }[];
+  position: Position[];
 
   ctx: CanvasRenderingContext2D;
   private direction: DIRECTION;
   tick = 0;
-  food: Food;
   alive = true;
 
-  constructor(ctx: CanvasRenderingContext2D) {
+  constructor(ctx: CanvasRenderingContext2D, board: CellState[][]) {
     this.ctx = ctx;
     this.direction = DIRECTION.RIGHT;
-    this.body = [{ x: this.head.x - 1, y: this.head.y }];
-    this.food = new Food(ctx, this.head, this.body)
+    this.position = [{ x: Math.floor(COLUMNS / 2), y: Math.floor(ROWS / 2) }, 
+    { x: Math.floor(COLUMNS / 2) - 1, y: Math.floor(ROWS / 2) },
+    { x: Math.floor(COLUMNS / 2) - 2, y: Math.floor(ROWS / 2) },
+    { x: Math.floor(COLUMNS / 2) - 3, y: Math.floor(ROWS / 2) },
+  ];
+    this.genFood(board)
   }
 
-  draw() {
-    this.food.draw();
-    this.ctx.fillStyle = this.color;
+  draw(board: CellState[][]) {
     this.tick++;
-    this.ctx.fillRect(this.head.x * GRID_SIZE, this.head.y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
-    for (let cell of this.body) {
-      this.ctx.fillRect(cell.x * GRID_SIZE, cell.y * GRID_SIZE, GRID_SIZE, GRID_SIZE); 
-    }
-    if (this.tick % SPEED === 0) {
-      if (this.alive) {
-        this.update();
-      }
-    }
-  }
 
-  update() {
+    for (let position of this.position) {
+      const row = position.x;
+      const col = position.y;
+      board[row][col] = 'S';
+    }
+
     if (this.checkCollision()) {
       this.alive = false;
-      return
     }
-    this.body.unshift({ x: this.head.x, y: this.head.y })
-    this.body = this.body.slice(0, this.length - 1)
-    
+
+    if (this.tick % SPEED === 0 && this.alive) {
+      this.update(board);
+    }
+
+  }
+
+  update(board: CellState[][]) {
+    /* SNAKE DIRECTION CHANGE */
+    const head = { x: this.position[0].x, y: this.position[0].y };
+
     switch (this.direction) {
       case DIRECTION.RIGHT:
-        if (this.head.x === COLUMNS - 1) {
-          this.head.x = 0;
+        if (head.x === COLUMNS - 1) {
+          head.x = 0;
         } else {
-          this.head.x += 1;
+          head.x += 1;
         }
         break;
       case DIRECTION.DOWN:
-        if (this.head.y === ROWS - 1) {
-          this.head.y = 0;
+        if (head.y === ROWS - 1) {
+          head.y = 0;
         } else {
-          this.head.y += 1;
+          head.y += 1;
         }
         break;
       case DIRECTION.LEFT:
-        if (this.head.x === 0) {
-          this.head.x = COLUMNS - 1;
+        if (head.x === 0) {
+          head.x = COLUMNS - 1;
         } else {
-          this.head.x -= 1;
+          head.x -= 1;
         }
         break;
       case DIRECTION.UP:
-        if (this.head.y === 0) {
-          this.head.y = ROWS - 1;
+        if (head.y === 0) {
+          head.y = ROWS - 1;
         } else {
-          this.head.y -= 1;
+          head.y -= 1;
         }
         break;
     }
-    if (this.head.x === this.food.x && this.head.y === this.food.y) {
-      this.food.spawn()
-      this.length++;
-      LEVEL.innerHTML = String(this.length - 1);
-      this.update()
+
+    /* SNAKE MOVEMENT */
+    this.position = [head, ...this.position];
+
+    if (board[head.x][head.y] === 'F') {
+      this.genFood(board)
+      LEVEL.innerText = String(this.position.length)
+      console.log(this.position.length)
+    } else {
+      const tail = this.position.pop();
+      if (tail) {
+        board[tail.x][tail.y] = null;
+      }
     }
   }
 
@@ -99,9 +101,31 @@ export default class Snake {
   }
 
   private checkCollision(): boolean {
-    for (let cell of this.body) {
-      if (cell.x === this.head.x && cell.y === this.head.y) return true
+    const head = this.position[0];
+    for (let i = 1; i < this.position.length; i++) {
+      if (this.position[i].x === head.x && this.position[i].y === head.y) return true;
     }
-    return false
+    return false;
+  }
+
+  private clearSnake(board: CellState[][]) {
+    for (let position of this.position) {
+      board[position.x][position.y] = null;
+    }
+  }
+
+  private genFood(board: CellState[][]) {
+    const emptyCells: Position[] = [];
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        if (board[i][j] === null) {
+          emptyCells.push({x: i, y: j})
+        }
+      }
+    }
+    const randomCell = Math.floor(Math.random() * emptyCells.length)
+    const x = emptyCells[randomCell].x
+    const y = emptyCells[randomCell].y
+    board[x][y] = 'F'
   }
 }

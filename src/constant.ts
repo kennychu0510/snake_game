@@ -14,7 +14,9 @@ export enum DIRECTION {
 
 export const SPEED = 20;
 
-export type Cell = {
+export type Position = {
   x: number,
   y: number
 }
+
+export type CellState = 'S' | null | 'F'
