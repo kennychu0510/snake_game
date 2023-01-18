@@ -1,7 +1,7 @@
 import { CellState, COLUMNS, DIRECTION, GRID_SIZE, Position, ROWS, SPEED } from './constant';
 import { getElement } from './helper';
 
-const LEVEL = getElement("#game-header span") as HTMLSpanElement;
+const LEVEL = getElement('#game-header span') as HTMLSpanElement;
 
 export default class Snake {
   color = 'red';
@@ -15,12 +15,8 @@ export default class Snake {
   constructor(ctx: CanvasRenderingContext2D, board: CellState[][]) {
     this.ctx = ctx;
     this.direction = DIRECTION.RIGHT;
-    this.position = [{ x: Math.floor(COLUMNS / 2), y: Math.floor(ROWS / 2) }, 
-    { x: Math.floor(COLUMNS / 2) - 1, y: Math.floor(ROWS / 2) },
-    { x: Math.floor(COLUMNS / 2) - 2, y: Math.floor(ROWS / 2) },
-    { x: Math.floor(COLUMNS / 2) - 3, y: Math.floor(ROWS / 2) },
-  ];
-    this.genFood(board)
+    this.position = [{ x: Math.floor(COLUMNS / 2), y: Math.floor(ROWS / 2) }];
+    this.genFood(board);
   }
 
   draw(board: CellState[][]) {
@@ -39,7 +35,6 @@ export default class Snake {
     if (this.tick % SPEED === 0 && this.alive) {
       this.update(board);
     }
-
   }
 
   update(board: CellState[][]) {
@@ -81,9 +76,9 @@ export default class Snake {
     this.position = [head, ...this.position];
 
     if (board[head.x][head.y] === 'F') {
-      this.genFood(board)
-      LEVEL.innerText = String(this.position.length)
-      console.log(this.position.length)
+      this.genFood(board);
+      LEVEL.innerText = String(this.position.length);
+      console.log(this.position.length);
     } else {
       const tail = this.position.pop();
       if (tail) {
@@ -119,13 +114,13 @@ export default class Snake {
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
         if (board[i][j] === null) {
-          emptyCells.push({x: i, y: j})
+          emptyCells.push({ x: i, y: j });
         }
       }
     }
-    const randomCell = Math.floor(Math.random() * emptyCells.length)
-    const x = emptyCells[randomCell].x
-    const y = emptyCells[randomCell].y
-    board[x][y] = 'F'
+    const randomCell = Math.floor(Math.random() * emptyCells.length);
+    const x = emptyCells[randomCell].x;
+    const y = emptyCells[randomCell].y;
+    board[x][y] = 'F';
   }
 }
