@@ -1,7 +1,7 @@
 import { CellState, COLUMNS, DIRECTION, GRID_SIZE, Position, ROWS, SPEED } from './constant';
 import { getElement } from './helper';
 
-const LEVEL = getElement('#game-header span') as HTMLSpanElement;
+const LEVEL = getElement("#game-header span") as HTMLSpanElement;
 
 export default class Snake {
   color = 'red';
